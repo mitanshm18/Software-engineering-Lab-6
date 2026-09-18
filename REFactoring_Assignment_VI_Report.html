@@ -1,0 +1,162 @@
+<hr />
+
+<p>SOFTWARE ENGINEERING
+ASSIGNMENT - VI</p>
+
+<h2>Open-Source Code Refactoring</h2>
+
+<h2>1. INTRODUCTION</h2>
+
+<p>Code refactoring improves nonfunctional attributes of the software without altering the behavior. The purpose of this assignment is to identify code smells in a real-world, open-source Python repository, establish a testing safety net with <code>pytest</code>, and perform distinct refactorings to improve code maintainability and cyclomatic complexity.</p>
+
+<h2>2. REPOSITORY SELECTION</h2>
+
+<ul>
+<li><strong>Original Project name:</strong> Battleship</li>
+<li><strong>Original repository URL:</strong> https://github.com/gbrough/battleship</li>
+<li><strong>My refactored repository URL:</strong> https://github.com/mitanshm18/Software-engineering-Lab-6</li>
+<li><strong>Programming language:</strong> Python</li>
+<li><strong>Initial LOC:</strong> 155 lines of code for the main <code>battleship.py</code> application.</li>
+<li><strong>Project description:</strong> A CLI-based Battleship game featuring a human player versus an automated computer opponent.</li>
+</ul>
+
+<h2>3. CODE SMELL AUDIT</h2>
+
+<table>
+<thead>
+<tr>
+  <th>#</th>
+  <th>Code Smell</th>
+  <th>File</th>
+  <th>Function</th>
+  <th>Explanation</th>
+  <th>Refactoring</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>1</td>
+  <td>Duplicate Code</td>
+  <td><code>battleship.py</code></td>
+  <td><code>place_ships</code></td>
+  <td>The exact same <code>for</code> loops were used to place ships for the player and computer depending on orientation.</td>
+  <td>Extract Method</td>
+</tr>
+<tr>
+  <td>2</td>
+  <td>Magic Numbers</td>
+  <td><code>battleship.py</code></td>
+  <td><code>check_ship_fit</code></td>
+  <td>Hardcoded <code>8</code> was used multiple times to check if ships exceeded the grid.</td>
+  <td>Replace Magic Numbers with Constants</td>
+</tr>
+<tr>
+  <td>3</td>
+  <td>Complex Conditional</td>
+  <td><code>battleship.py</code></td>
+  <td><code>user_input</code></td>
+  <td>Huge nested <code>while True</code> and <code>try...except</code> blocks checking input validity. CCN was 18.</td>
+  <td>Simplify Conditional (Extract helper)</td>
+</tr>
+<tr>
+  <td>4</td>
+  <td>Poor Naming</td>
+  <td><code>battleship.py</code></td>
+  <td><code>count_hit_ships</code></td>
+  <td>A variable iterating over elements in a row was named <code>column</code>, making it sound like an integer index rather than a cell object.</td>
+  <td>Rename Variable</td>
+</tr>
+</tbody>
+</table>
+
+<h2>4. TESTING STRATEGY &amp; SAFETY NET</h2>
+
+<ul>
+<li><strong>Existing test suite:</strong> None</li>
+<li><strong>Testing framework:</strong> <code>pytest</code> and <code>unittest.mock.patch</code></li>
+<li><strong>Coverage command:</strong> <code>python -m pytest --cov=battleship test_battleship.py</code></li>
+<li><strong>Final coverage:</strong> 78% Statement Coverage</li>
+<li><strong>Tests Execution:</strong> Passed successfully before and after refactoring.</li>
+</ul>
+
+<h2>5. SYSTEMATIC REFACTORING OPERATIONS</h2>
+
+<ol>
+<li><strong>Extract Method:</strong> Abstracted the duplicated matrix modification logic into a dedicated <code>place_ship_on_board(board, row, column, orientation, ship_length)</code> function.</li>
+<li><strong>Replace Magic Numbers:</strong> Defined <code>BOARD_SIZE = 8</code> globally and dynamically sized arrays and condition bounds (e.g., <code>row + SHIP_LENGTH &gt; BOARD_SIZE</code>).</li>
+<li><strong>Simplify Conditional:</strong> Created a small generic <code>get_valid_input(prompt, valid_options)</code> helper to collapse the three massive while-loops inside <code>user_input</code>.</li>
+<li><strong>Rename Variable:</strong> Renamed the confusing <code>column</code> to <code>cell</code>.</li>
+</ol>
+
+<h2>6. BEFORE VS AFTER METRICS</h2>
+
+<table>
+<thead>
+<tr>
+  <th>Metric</th>
+  <th>Before</th>
+  <th>After</th>
+  <th>Change</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>Average Cyclomatic Complexity</td>
+  <td>8.0</td>
+  <td>5.3</td>
+  <td>Improved (-33.7%)</td>
+</tr>
+<tr>
+  <td><code>user_input</code> function Complexity</td>
+  <td>18</td>
+  <td>4</td>
+  <td>Improved (-77.7%)</td>
+</tr>
+<tr>
+  <td>Lines of Code (NLOC)</td>
+  <td>155</td>
+  <td>138</td>
+  <td>Improved (-11%)</td>
+</tr>
+</tbody>
+</table>
+
+<p><strong>Explanation:</strong> 
+Extracting the input validation logic drastically reduced the complexity footprint of <code>user_input</code>. Removing duplicate code in <code>place_ships</code> physically shrank the codebase size.</p>
+
+<h2>7. GIT COMMIT HISTORY</h2>
+
+<table>
+<thead>
+<tr>
+  <th>Commit Message</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td><code>Initial import of original python Battleship project</code></td>
+</tr>
+<tr>
+  <td><code>chore: rename main file to battleship.py for easier import</code></td>
+</tr>
+<tr>
+  <td><code>test: add test suite with 76% coverage</code></td>
+</tr>
+<tr>
+  <td><code>refactor: extract place_ship_on_board method to remove duplicate code</code></td>
+</tr>
+<tr>
+  <td><code>refactor: replace magic numbers with BOARD_SIZE constant</code></td>
+</tr>
+<tr>
+  <td><code>refactor: simplify conditionals and loops with get_valid_input helper</code></td>
+</tr>
+<tr>
+  <td><code>refactor: rename confusing 'column' variable to 'cell'</code></td>
+</tr>
+</tbody>
+</table>
+
+<h2>8. REFLECTION</h2>
+
+<p>This project demonstrated the immense power of <code>pytest</code> and <code>unittest.mock</code>. Because the CLI game heavily relied on <code>input()</code> and randomness, it was initially untestable. By heavily mocking <code>input</code> via <code>@patch</code>, we achieved strong branch coverage, which made dropping the CCN of <code>user_input</code> from 18 to 4 completely risk-free.</p>
